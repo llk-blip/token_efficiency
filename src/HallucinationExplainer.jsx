@@ -14,7 +14,7 @@ function Tok({ type, large = false, pulse = false, children }) {
       ...TOKEN_STYLES[type],
       display: "inline-flex", alignItems: "center", justifyContent: "center",
       padding: "5px 11px", borderRadius: "6px", border: "0.5px solid",
-      fontSize: large ? "16px" : "13px", fontWeight: 500, margin: "3px",
+      fontSize: large ? "18px" : "15px", fontWeight: 500, margin: "3px",
       animation: pulse ? "pulse 1.5s ease-in-out infinite" : undefined,
     }}>
       {children}
@@ -25,13 +25,13 @@ function Tok({ type, large = false, pulse = false, children }) {
 function Bar({ label, pct, bg, clr, mult = 1 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-      <span style={{ fontSize: 12, minWidth: 56, color: "var(--hl-text2)" }}>{label}</span>
+      <span style={{ fontSize: 14, minWidth: 56, color: "var(--hl-text2)" }}>{label}</span>
       <div style={{ flex: 1, background: "var(--hl-bg2)", borderRadius: 4, overflow: "hidden" }}>
         <div style={{
           width: `${Math.min(pct * mult, 100)}%`, height: 22, borderRadius: 4,
           background: bg, color: clr,
           display: "flex", alignItems: "center", padding: "0 8px",
-          fontSize: 12, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden",
+          fontSize: 14, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden",
           transition: "width 0.5s ease",
         }}>{pct}%</div>
       </div>
@@ -42,7 +42,7 @@ function Bar({ label, pct, bg, clr, mult = 1 }) {
 function SlotLabel({ children }) {
   return (
     <p style={{
-      fontSize: 11, fontWeight: 500, textTransform: "uppercase",
+      fontSize: 15, fontWeight: 500, textTransform: "uppercase",
       letterSpacing: "0.06em", color: "var(--hl-text3)", margin: "0 0 6px",
     }}>{children}</p>
   );
@@ -72,7 +72,7 @@ const STAGES = [
         <div style={{ marginBottom: 10 }}>
           <Tok type="confid" large>Paris</Tok>
         </div>
-        <p style={{ fontSize: 12, color: "var(--hl-text3)", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "var(--hl-text3)", margin: 0 }}>
           ✓ Pattern is extremely common in training data — high confidence, correct answer.
         </p>
       </div>
@@ -91,7 +91,7 @@ const STAGES = [
           <Bar label="Berlin" pct={5}  bg="#888780" clr="#444441" />
           <Bar label="Madrid" pct={4}  bg="#888780" clr="#444441" />
         </div>
-        <p style={{ fontSize: 12, color: "var(--hl-text3)", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "var(--hl-text3)", margin: 0 }}>
           The model samples from this distribution. Usually fine — but what about obscure questions?
         </p>
       </div>
@@ -117,7 +117,7 @@ const STAGES = [
           <Bar label="12,000" pct={13} bg="#D85A30" clr="#4A1B0C" mult={2.5} />
           <Bar label="…"      pct={24} bg="#888780" clr="#444441" mult={2.5} />
         </div>
-        <p style={{ fontSize: 12, color: "var(--hl-text3)", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "var(--hl-text3)", margin: 0 }}>
           Many options look equally plausible. The model still picks one — and sounds just as confident.
         </p>
       </div>
@@ -129,11 +129,11 @@ const STAGES = [
     Body: () => (
       <div className="stage-anim">
         <SlotLabel>What you asked</SlotLabel>
-        <Card style={{ marginBottom: 12, fontSize: 13, color: "var(--hl-text1)" }}>
+        <Card style={{ marginBottom: 12, fontSize: 15, color: "var(--hl-text1)" }}>
           "Can you cite the 2019 paper by Dr. Elena Voss on sleep and memory consolidation?"
         </Card>
         <SlotLabel>What the model produces</SlotLabel>
-        <Card style={{ marginBottom: 12, fontSize: 13, lineHeight: 1.7, color: "var(--hl-text1)" }}>
+        <Card style={{ marginBottom: 12, fontSize: 15, lineHeight: 1.7, color: "var(--hl-text1)" }}>
           {["Voss, E.", "(2019).", "Sleep-dependent", "consolidation", "of", "declarative", "memory."].map(w => (
             <Tok key={w} type="confid">{w}</Tok>
           ))}
@@ -144,8 +144,8 @@ const STAGES = [
           background: "var(--hl-bg-danger)", borderRadius: 8, padding: "10px 14px",
           border: "0.5px solid var(--hl-border-danger)",
         }}>
-          <span style={{ fontSize: 16, marginTop: 1 }}>⚠</span>
-          <span style={{ fontSize: 13, color: "var(--hl-text-danger)", lineHeight: 1.6 }}>
+          <span style={{ fontSize: 18, marginTop: 1 }}>⚠</span>
+          <span style={{ fontSize: 15, color: "var(--hl-text-danger)", lineHeight: 1.6 }}>
             This paper does not exist. The journal, volume, pages — all fabricated.
             But the format is perfect: it looks exactly like a real citation.
           </span>
@@ -161,24 +161,24 @@ const STAGES = [
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 8 }}>
           <Card>
             <SlotLabel>Hedged (honest uncertainty)</SlotLabel>
-            <p style={{ fontSize: 13, margin: 0, color: "var(--hl-text2)", fontStyle: "italic" }}>
+            <p style={{ fontSize: 15, margin: 0, color: "var(--hl-text2)", fontStyle: "italic" }}>
               "I'm not sure of the exact figure, but it might be around…"
             </p>
-            <p style={{ fontSize: 11, color: "var(--hl-text3)", margin: "6px 0 0" }}>
+            <p style={{ fontSize: 15, color: "var(--hl-text3)", margin: "6px 0 0" }}>
               ← Rare pattern in formal text. Model learned to avoid this style.
             </p>
           </Card>
           <Card>
             <SlotLabel>Assertive (what the model learned)</SlotLabel>
-            <p style={{ fontSize: 13, margin: 0, color: "var(--hl-text1)" }}>
+            <p style={{ fontSize: 15, margin: 0, color: "var(--hl-text1)" }}>
               "The population of the town is 3,107 residents as of the 2018 census."
             </p>
-            <p style={{ fontSize: 11, color: "var(--hl-text3)", margin: "6px 0 0" }}>
+            <p style={{ fontSize: 15, color: "var(--hl-text3)", margin: "6px 0 0" }}>
               ← Common pattern in authoritative text. Model mirrors this confidently.
             </p>
           </Card>
         </div>
-        <p style={{ fontSize: 12, color: "var(--hl-text3)", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "var(--hl-text3)", margin: 0 }}>
           The model isn't lying — it has no concept of truth. It's completing patterns.
           Confident-sounding completions ranked higher in training.
         </p>
@@ -194,7 +194,7 @@ const STAGES = [
           <Card style={{ borderRadius: 10, padding: 12 }}>
             <p style={{ fontSize: 22, margin: "0 0 6px" }}>✅</p>
             <SlotLabel>LLMs are good at</SlotLabel>
-            <ul style={{ fontSize: 13, lineHeight: 1.8, margin: 0, paddingLeft: 16, color: "var(--hl-text2)" }}>
+            <ul style={{ fontSize: 15, lineHeight: 1.8, margin: 0, paddingLeft: 16, color: "var(--hl-text2)" }}>
               <li>Common, well-documented facts</li>
               <li>Synthesising & explaining</li>
               <li>Writing & reasoning tasks</li>
@@ -204,7 +204,7 @@ const STAGES = [
           <Card style={{ borderRadius: 10, padding: 12 }}>
             <p style={{ fontSize: 22, margin: "0 0 6px" }}>⚠️</p>
             <SlotLabel>Hallucination risk is higher for</SlotLabel>
-            <ul style={{ fontSize: 13, lineHeight: 1.8, margin: 0, paddingLeft: 16, color: "var(--hl-text2)" }}>
+            <ul style={{ fontSize: 15, lineHeight: 1.8, margin: 0, paddingLeft: 16, color: "var(--hl-text2)" }}>
               <li>Specific citations & sources</li>
               <li>Precise statistics & dates</li>
               <li>Niche or obscure topics</li>
@@ -216,7 +216,7 @@ const STAGES = [
           background: "var(--hl-bg-info)", borderRadius: 8, padding: "10px 14px",
           border: "0.5px solid var(--hl-border-info)",
         }}>
-          <p style={{ fontSize: 13, color: "var(--hl-text-info)", margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 15, color: "var(--hl-text-info)", margin: 0, lineHeight: 1.6 }}>
             💡 Always verify specific facts, citations, and statistics from an LLM against a reliable primary source.
           </p>
         </div>
@@ -268,7 +268,7 @@ export default function HallucinationExplainer({ isDark }) {
   const go = (dir) => setCur(c => Math.max(0, Math.min(STAGES.length - 1, c + dir)));
 
   const btnStyle = {
-    padding: "7px 18px", fontSize: 13, borderRadius: 8,
+    padding: "7px 18px", fontSize: 15, borderRadius: 8,
     border: `0.5px solid ${vars["--hl-border2"]}`,
     background: vars["--hl-bg2"],
     color: vars["--hl-text1"],
@@ -291,13 +291,13 @@ export default function HallucinationExplainer({ isDark }) {
 
       {/* Stage */}
       <div key={cur}>
-        <p style={{ fontSize: 11, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: vars["--hl-text3"], margin: "0 0 4px" }}>
+        <p style={{ fontSize: 15, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em", color: vars["--hl-text3"], margin: "0 0 4px" }}>
           {cur + 1} of {STAGES.length}
         </p>
-        <h3 style={{ fontSize: 16, fontWeight: 500, margin: "0 0 8px", color: vars["--hl-text1"] }}>
+        <h3 style={{ fontSize: 18, fontWeight: 500, margin: "0 0 8px", color: vars["--hl-text1"] }}>
           {stage.title}
         </h3>
-        <p style={{ fontSize: 13, color: vars["--hl-text2"], lineHeight: 1.6, margin: "0 0 16px" }}>
+        <p style={{ fontSize: 15, color: vars["--hl-text2"], lineHeight: 1.6, margin: "0 0 16px" }}>
           {stage.caption}
         </p>
         <Body />
