@@ -1,5 +1,6 @@
 import { useState } from "react";
 import HallucinationExplainer from "./HallucinationExplainer";
+import SkyToggle from "./SkyToggle";
 
 // ── Section data ──────────────────────────────────────────────────────────────
 
@@ -567,7 +568,7 @@ export default function TokenGuide() {
             </div>
 
             {/* Theme toggle */}
-            <ThemeToggle isDark={isDark} onToggle={() => setIsDark(d => !d)} />
+            <SkyToggle isDark={isDark} onToggle={() => setIsDark(d => !d)} />
 
             <span className={`hidden sm:block text-xs font-mono px-2 py-1 rounded ${t.badge}`}>
               For New Users
