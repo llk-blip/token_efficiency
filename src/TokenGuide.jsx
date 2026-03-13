@@ -359,7 +359,7 @@ function ModelTable({ t }) {
   ];
   return (
     <div className={`overflow-x-auto my-5 rounded-lg border ${t.tblWrap}`}>
-      <table className="w-full text-sm md:text-base">
+      <table className="w-full text-base md:text-lg">
         <thead>
           <tr className={t.tblHead}>
             <th className={`px-4 py-3 font-semibold text-left ${t.tblAccent}`}>Task Type</th>
@@ -431,7 +431,7 @@ export default function TokenGuide() {
     // Full-line bold header
     if (line.startsWith("**") && line.endsWith("**")) {
       return (
-        <p key={i} className={`font-bold mt-6 mb-2 text-base md:text-lg ${t.accent}`}>
+        <p key={i} className={`font-bold mt-6 mb-2 text-lg md:text-xl ${t.accent}`}>
           {line.replace(/\*\*/g, "")}
         </p>
       );
@@ -441,7 +441,7 @@ export default function TokenGuide() {
     if (line.includes("**")) {
       const parts = line.split(/\*\*(.*?)\*\*/g);
       return (
-        <p key={i} className={`text-base md:text-lg leading-relaxed mb-3 ${t.body}`}>
+        <p key={i} className={`text-lg md:text-xl leading-relaxed mb-3 ${t.body}`}>
           {parts.map((part, j) =>
             j % 2 === 1
               ? <strong key={j} className={`font-semibold ${t.bold}`}>{part}</strong>
@@ -455,8 +455,8 @@ export default function TokenGuide() {
     if (line.startsWith("- ") || line.startsWith("❌") || line.startsWith("✅") || line.startsWith("•")) {
       return (
         <div key={i} className="flex gap-2 mb-2">
-          <span className={`text-base md:text-lg mt-0.5 flex-shrink-0 ${t.muted}`}>›</span>
-          <p className={`text-base md:text-lg leading-relaxed ${t.body}`}>
+          <span className={`text-lg md:text-xl mt-0.5 flex-shrink-0 ${t.muted}`}>›</span>
+          <p className={`text-lg md:text-xl leading-relaxed ${t.body}`}>
             {line.replace(/^[-•]\s/, "")}
           </p>
         </div>
@@ -467,10 +467,10 @@ export default function TokenGuide() {
     if (line.match(/^\d+\./)) {
       return (
         <div key={i} className="flex gap-2 mb-2">
-          <span className={`text-base md:text-lg flex-shrink-0 font-semibold ${t.accentNum}`}>
+          <span className={`text-lg md:text-xl flex-shrink-0 font-semibold ${t.accentNum}`}>
             {line.match(/^\d+/)[0]}.
           </span>
-          <p className={`text-base md:text-lg leading-relaxed ${t.body}`}>
+          <p className={`text-lg md:text-xl leading-relaxed ${t.body}`}>
             {line.replace(/^\d+\.\s*/, "")}
           </p>
         </div>
@@ -480,7 +480,7 @@ export default function TokenGuide() {
     if (line.trim() === "") return <div key={i} className="h-3" />;
 
     return (
-      <p key={i} className={`text-base md:text-lg leading-relaxed mb-3 ${t.body}`}>
+      <p key={i} className={`text-lg md:text-xl leading-relaxed mb-3 ${t.body}`}>
         {line}
       </p>
     );
@@ -512,7 +512,7 @@ export default function TokenGuide() {
       if (block.type === "code") {
         return (
           <div key={block.key}
-            className={`rounded-lg p-4 my-4 font-mono text-sm md:text-base whitespace-pre-wrap leading-relaxed overflow-x-auto border ${t.code}`}>
+            className={`rounded-lg p-4 my-4 font-mono text-base md:text-lg whitespace-pre-wrap leading-relaxed overflow-x-auto border ${t.code}`}>
             {block.content}
           </div>
         );
@@ -595,7 +595,7 @@ export default function TokenGuide() {
         `}>
           {sections.map((s) => (
             <button key={s.id} onClick={() => handleNavClick(s.id)}
-              className={`w-full text-left px-3 py-2.5 rounded-lg mb-1 transition-all text-sm leading-snug ${
+              className={`w-full text-left px-3 py-2.5 rounded-lg mb-1 transition-all text-base leading-snug ${
                 active === s.id ? t.navActive : t.navInactive
               }`}>
               <span className="mr-2">{s.emoji}</span>
@@ -621,7 +621,7 @@ export default function TokenGuide() {
               {activeSection.isComponent ? (
                 <>
                   <div className={`rounded-lg border p-4 mb-6 ${t.introBg}`}>
-                    <p className={`text-base md:text-lg leading-relaxed ${t.introText}`}>
+                    <p className={`text-lg md:text-xl leading-relaxed ${t.introText}`}>
                       {activeSection.intro}
                     </p>
                   </div>
@@ -640,17 +640,17 @@ export default function TokenGuide() {
             <button
               onClick={() => curIdx > 0 && handleNavClick(sections[curIdx - 1].id)}
               disabled={curIdx === 0}
-              className={`text-sm md:text-base transition-colors px-4 py-2 rounded border ${t.navBtn}`}
+              className={`text-base md:text-lg transition-colors px-4 py-2 rounded border ${t.navBtn}`}
             >
               ← Previous
             </button>
-            <span className={`text-sm font-mono ${t.counter}`}>
+            <span className={`text-base font-mono ${t.counter}`}>
               {curIdx + 1} / {sections.length}
             </span>
             <button
               onClick={() => curIdx < sections.length - 1 && handleNavClick(sections[curIdx + 1].id)}
               disabled={curIdx === sections.length - 1}
-              className={`text-sm md:text-base transition-colors px-4 py-2 rounded border ${t.navBtn}`}
+              className={`text-base md:text-lg transition-colors px-4 py-2 rounded border ${t.navBtn}`}
             >
               Next →
             </button>
