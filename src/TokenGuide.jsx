@@ -1,4 +1,7 @@
 import { useState } from "react";
+import HallucinationExplainer from "./HallucinationExplainer";
+
+// ── Section data ──────────────────────────────────────────────────────────────
 
 const sections = [
   {
@@ -20,11 +23,11 @@ When Claude's answer misses the mark, most people type a follow-up message like 
 **Real example:**
 ❌ Slow & expensive:
 "Write a birthday message for my mum."
-[Claude writes something formal]
+[Claude writes something too formal]
 "Make it warmer and more personal."
 [Claude re-reads everything, writes again]
 "Add a joke about her love of gardening."
-[Claude re-reads everything again...]
+[Claude re-reads everything again…]
 ✅ Fast & lean:
 [Edit original message] → "Write a warm, personal birthday message for my mum. She loves gardening. Include a light joke about it. Keep it under 60 words."
 [One clean response. Done.]
@@ -37,11 +40,11 @@ When Claude's answer misses the mark, most people type a follow-up message like 
     content: `Here's something most people don't realise: Claude re-reads your entire conversation history on every single reply. Your first message costs ~200 tokens. By message 30, a simple question can cost 50,000+ tokens — just from carrying all that history.
 **Long chats are expensive chats.**
 **What to do instead:**
-- When you finish a task (e.g., you've drafted your email, planned your trip, or finished your essay feedback), start a new chat.
-- Before closing the old chat, ask Claude: "Summarise what we decided in 5 bullet points." Copy that. Paste it at the top of the new chat as your starting context.
+- When you finish a task (you've drafted your email, planned your trip, finished your essay feedback), start a new chat.
+- Before closing the old chat, ask: "Summarise what we decided in 5 bullet points." Copy that. Paste it at the top of your next chat as starting context.
 **Real example:**
 You've spent 25 messages planning a dinner party menu with Claude. Now you want help writing the invitations.
-❌ Keep going in the same chat (Claude carries 25 messages of food discussion into every invitation reply)
+❌ Keep going in the same chat — Claude carries 25 messages of food discussion into every invitation reply.
 ✅ New chat → "I've finalised my dinner party menu: 3-course Italian, Saturday 7pm, 8 guests. Now help me write a casual invitation. Max 80 words."
 **The rule of thumb:** Finish one task → summarise → new chat → paste summary. Repeat.`,
   },
@@ -81,7 +84,7 @@ CONSTRAINTS: [Format, length, what to skip]
 OUTPUT: [Exactly what you want back]
 \`\`\`
 **Example — rambling prompt:**
-"Hey so I'm trying to write a message to my landlord because the boiler broke two weeks ago and he hasn't fixed it and I want to sound firm but not rude because I still have 6 months left on my lease and I don't want to make things awkward..."
+"Hey so I'm trying to write a message to my landlord because the boiler broke two weeks ago and he hasn't fixed it and I want to sound firm but not rude because I still have 6 months left on my lease and I don't want to make things awkward…"
 **Example — structured prompt:**
 \`\`\`
 TASK: Write a firm but polite message to my landlord
@@ -144,7 +147,7 @@ Each chat stays small. You never drag the full history forward. **The key habit:
 - **Web Search / Research mode** — Adds live web results to responses. Great for current events, expensive for everything else. Toggle it off when you're just writing, editing, or brainstorming.
 - **Extended Thinking** — Claude "thinks longer" before answering. Leave it off by default. Only switch it on when your first answer wasn't good enough.
 - **Connectors** (Google Drive, email, etc.) — If Claude has access to your files or apps, it reads them even when irrelevant. Disconnect what you're not actively using.
-**How to check:** Go to the chat settings (usually a toggle or settings icon near the input box). Before starting a task, ask yourself: "Do I actually need this feature right now?"
+**How to check:** Look for toggles or a settings icon near the chat input box. Before starting a task, ask yourself: "Do I actually need this feature right now?"
 **Rule of thumb:** Plain writing, editing, and Q&A tasks need zero extra features. Keep it simple.`,
   },
   {
@@ -156,20 +159,13 @@ Each chat stays small. You never drag the full history forward. **The key habit:
 **Sonnet** — Balanced, the default for most work
 **Opus** — Powerful, for complex and demanding tasks
 **When to use each:**
-- Use **Haiku** all day for: quick questions, grammar checks, short rewrites, brainstorming, translations, formatting. Haiku at a fraction of the cost frees up 50–70% of your budget for tasks that actually need more power.
+- Use **Haiku** all day for: quick questions, grammar checks, short rewrites, brainstorming, translations, formatting. Haiku frees up 50–70% of your budget for tasks that actually need more power.
 - Use **Sonnet** for: writing drafts, analysing documents, summarising long texts, planning, research.
 - Use **Opus** for: complex problem-solving, long document review, nuanced analysis, tasks where your first attempt wasn't good enough.
 **Everyday rule:**
 "Haiku for quick tasks. Sonnet for real work. Opus for the hard stuff."
 **How to switch:** Look for the model selector near the top of your Claude window. Most people never change it — and end up burning Opus tokens on tasks Haiku could handle in seconds.`,
-    table: {
-      headers: ["Task Type", "Recommended Model", "Cost Impact"],
-      rows: [
-        ["Quick questions, grammar, formatting, brainstorming", "Haiku", "Very Low"],
-        ["Writing, analysis, summarising, drafts", "Sonnet", "Medium"],
-        ["Deep research, complex tasks, long document review", "Opus", "High"],
-      ],
-    },
+    table: true,
   },
   {
     id: "spread-work",
@@ -286,125 +282,221 @@ OUTPUT: Top 2 issues only. No full rewrite.
 - Pick Haiku for simple tasks, Sonnet for most work, Opus for hard problems
 - Spread sessions across the day — don't sprint and hit the wall`,
   },
+  {
+    id: "hallucination-bonus",
+    title: "Bonus: Why Claude Sometimes Gets Things Wrong",
+    emoji: "🤯",
+    isComponent: true,
+    intro: `Understanding how Claude actually works under the hood makes you a much smarter user. This interactive explainer walks through how large language models generate text — and why they sometimes confidently produce wrong answers (a phenomenon called "hallucination"). Six short steps, no technical background needed.`,
+  },
 ];
 
-const ModelTable = () => (
-  <div className="overflow-x-auto my-5 rounded-lg border border-slate-700">
-    <table className="w-full text-sm md:text-base">
-      <thead>
-        <tr className="bg-slate-800 text-left">
-          <th className="px-4 py-3 text-amber-300 font-semibold">Task Type</th>
-          <th className="px-4 py-3 text-amber-300 font-semibold">Model</th>
-          <th className="px-4 py-3 text-amber-300 font-semibold">Cost</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className="border-t border-slate-700 hover:bg-slate-800/40 transition-colors">
-          <td className="px-4 py-3 text-slate-300">Quick questions, grammar, formatting, brainstorming</td>
-          <td className="px-4 py-3 font-semibold text-emerald-400">Haiku</td>
-          <td className="px-4 py-3 text-emerald-400">Very Low</td>
-        </tr>
-        <tr className="border-t border-slate-700 hover:bg-slate-800/40 transition-colors">
-          <td className="px-4 py-3 text-slate-300">Writing, analysis, summarising, drafts</td>
-          <td className="px-4 py-3 font-semibold text-amber-300">Sonnet</td>
-          <td className="px-4 py-3 text-amber-300">Medium</td>
-        </tr>
-        <tr className="border-t border-slate-700 hover:bg-slate-800/40 transition-colors">
-          <td className="px-4 py-3 text-slate-300">Deep research, complex tasks, long document review</td>
-          <td className="px-4 py-3 font-semibold text-rose-400">Opus</td>
-          <td className="px-4 py-3 text-rose-400">High</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+// ── Theme config ──────────────────────────────────────────────────────────────
+
+function getTheme(isDark) {
+  return isDark ? {
+    app:         "bg-slate-950",
+    header:      "bg-slate-900 border-slate-800",
+    sidebar:     "bg-slate-950 border-slate-800",
+    navActive:   "bg-amber-500/20 text-amber-300 border border-amber-500/30",
+    navInactive: "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50",
+    title:       "text-white",
+    subtitle:    "text-slate-400",
+    body:        "text-slate-300",
+    bold:        "text-white",
+    accent:      "text-amber-300",
+    accentNum:   "text-amber-400",
+    muted:       "text-slate-500",
+    code:        "bg-slate-900 border-slate-700 text-emerald-300",
+    tblWrap:     "border-slate-700",
+    tblHead:     "bg-slate-800",
+    tblAccent:   "text-amber-300",
+    tblRow:      "border-slate-700 hover:bg-slate-800/40",
+    footBorder:  "border-slate-800",
+    navBtn:      "text-slate-400 hover:text-white border-slate-700 hover:border-slate-500 disabled:opacity-30",
+    counter:     "text-slate-600",
+    badge:       "text-slate-500 bg-slate-800",
+    menuBtn:     "text-slate-400 hover:text-white",
+    overlay:     "bg-black/60",
+    introBg:     "bg-slate-800/50 border-slate-700",
+    introText:   "text-slate-300",
+  } : {
+    app:         "bg-slate-50",
+    header:      "bg-white border-slate-200",
+    sidebar:     "bg-white border-slate-200",
+    navActive:   "bg-amber-100 text-amber-700 border border-amber-300",
+    navInactive: "text-slate-500 hover:text-slate-900 hover:bg-slate-100",
+    title:       "text-slate-900",
+    subtitle:    "text-slate-500",
+    body:        "text-slate-700",
+    bold:        "text-slate-900",
+    accent:      "text-amber-600",
+    accentNum:   "text-amber-600",
+    muted:       "text-slate-400",
+    code:        "bg-slate-100 border-slate-300 text-emerald-700",
+    tblWrap:     "border-slate-300",
+    tblHead:     "bg-slate-100",
+    tblAccent:   "text-amber-600",
+    tblRow:      "border-slate-200 hover:bg-slate-50",
+    footBorder:  "border-slate-200",
+    navBtn:      "text-slate-500 hover:text-slate-900 border-slate-300 hover:border-slate-400 disabled:opacity-30",
+    counter:     "text-slate-400",
+    badge:       "text-slate-500 bg-slate-100 border border-slate-200",
+    menuBtn:     "text-slate-500 hover:text-slate-900",
+    overlay:     "bg-black/40",
+    introBg:     "bg-amber-50 border-amber-200",
+    introText:   "text-slate-700",
+  };
+}
+
+// ── Model table ───────────────────────────────────────────────────────────────
+
+function ModelTable({ t }) {
+  const rows = [
+    { task: "Quick questions, grammar, formatting, brainstorming", model: "Haiku",  cost: "Very Low",  mColor: "text-emerald-500", cColor: "text-emerald-500" },
+    { task: "Writing, analysis, summarising, drafts",              model: "Sonnet", cost: "Medium",    mColor: "text-amber-400",   cColor: "text-amber-400"   },
+    { task: "Deep research, complex tasks, long document review",  model: "Opus",   cost: "High",      mColor: "text-rose-400",    cColor: "text-rose-400"    },
+  ];
+  return (
+    <div className={`overflow-x-auto my-5 rounded-lg border ${t.tblWrap}`}>
+      <table className="w-full text-sm md:text-base">
+        <thead>
+          <tr className={t.tblHead}>
+            <th className={`px-4 py-3 font-semibold text-left ${t.tblAccent}`}>Task Type</th>
+            <th className={`px-4 py-3 font-semibold text-left ${t.tblAccent}`}>Model</th>
+            <th className={`px-4 py-3 font-semibold text-left ${t.tblAccent}`}>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(r => (
+            <tr key={r.model} className={`border-t transition-colors ${t.tblRow}`}>
+              <td className={`px-4 py-3 ${t.body}`}>{r.task}</td>
+              <td className={`px-4 py-3 font-semibold ${r.mColor}`}>{r.model}</td>
+              <td className={`px-4 py-3 font-semibold ${r.cColor}`}>{r.cost}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Moon / Sun toggle icon ────────────────────────────────────────────────────
+
+function ThemeToggle({ isDark, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className={`flex items-center gap-1.5 text-xs font-mono px-2.5 py-1.5 rounded-lg border transition-all ${
+        isDark
+          ? "bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500"
+          : "bg-slate-100 border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300"
+      }`}
+    >
+      {isDark ? (
+        <>
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.42 1.42l-.71.7a1 1 0 11-1.42-1.41l.71-.71zM18 9a1 1 0 110 2h-1a1 1 0 110-2h1zM4.22 4.78a1 1 0 00-1.42 1.42l.71.7A1 1 0 004.93 5.5l-.71-.72zM3 9a1 1 0 100 2H2a1 1 0 100-2h1zm1.22 5.22a1 1 0 011.42 0l.7.71a1 1 0 11-1.41 1.42l-.71-.71a1 1 0 010-1.42zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm5.78-1.22a1 1 0 010 1.42l-.71.71a1 1 0 11-1.42-1.42l.71-.71a1 1 0 011.42 0zM10 6a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+          Light
+        </>
+      ) : (
+        <>
+          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+          </svg>
+          Dark
+        </>
+      )}
+    </button>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export default function TokenGuide() {
-  const [active, setActive] = useState("what-are-tokens");
+  const [active, setActive]       = useState("what-are-tokens");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDark, setIsDark]       = useState(true);
+
+  const t = getTheme(isDark);
   const activeSection = sections.find((s) => s.id === active);
 
-  const renderContent = (text) => {
-    return text.split("\n").map((line, i) => {
-      if (line.startsWith("```")) return null;
-      if (line.startsWith("**") && line.endsWith("**")) {
-        return (
-          <p key={i} className="font-bold text-amber-300 mt-6 mb-2 text-base md:text-lg">
-            {line.replace(/\*\*/g, "")}
-          </p>
-        );
-      }
-      if (line.includes("**")) {
-        const parts = line.split(/\*\*(.*?)\*\*/g);
-        return (
-          <p key={i} className="text-slate-300 text-base md:text-lg leading-relaxed mb-3">
-            {parts.map((part, j) =>
-              j % 2 === 1 ? (
-                <strong key={j} className="text-white font-semibold">
-                  {part}
-                </strong>
-              ) : (
-                part
-              )
-            )}
-          </p>
-        );
-      }
-      if (
-        line.startsWith("- ") ||
-        line.startsWith("❌") ||
-        line.startsWith("✅") ||
-        line.startsWith("•")
-      ) {
-        return (
-          <div key={i} className="flex gap-2 mb-2">
-            <span className="text-slate-400 text-base md:text-lg mt-0.5 flex-shrink-0">›</span>
-            <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-              {line.replace(/^[-•]\s/, "")}
-            </p>
-          </div>
-        );
-      }
-      if (line.match(/^\d+\./)) {
-        return (
-          <div key={i} className="flex gap-2 mb-2">
-            <span className="text-amber-400 text-base md:text-lg flex-shrink-0 font-semibold">
-              {line.match(/^\d+/)[0]}.
-            </span>
-            <p className="text-slate-300 text-base md:text-lg leading-relaxed">
-              {line.replace(/^\d+\.\s*/, "")}
-            </p>
-          </div>
-        );
-      }
-      if (line.trim() === "") return <div key={i} className="h-3" />;
+  // ── Text renderer ─────────────────────────────────────────────────────────
+
+  const renderLine = (line, i) => {
+    if (line.startsWith("```")) return null;
+
+    // Full-line bold header
+    if (line.startsWith("**") && line.endsWith("**")) {
       return (
-        <p key={i} className="text-slate-300 text-base md:text-lg leading-relaxed mb-3">
-          {line}
+        <p key={i} className={`font-bold mt-6 mb-2 text-base md:text-lg ${t.accent}`}>
+          {line.replace(/\*\*/g, "")}
         </p>
       );
-    });
+    }
+
+    // Inline bold
+    if (line.includes("**")) {
+      const parts = line.split(/\*\*(.*?)\*\*/g);
+      return (
+        <p key={i} className={`text-base md:text-lg leading-relaxed mb-3 ${t.body}`}>
+          {parts.map((part, j) =>
+            j % 2 === 1
+              ? <strong key={j} className={`font-semibold ${t.bold}`}>{part}</strong>
+              : part
+          )}
+        </p>
+      );
+    }
+
+    // List / emoji bullets
+    if (line.startsWith("- ") || line.startsWith("❌") || line.startsWith("✅") || line.startsWith("•")) {
+      return (
+        <div key={i} className="flex gap-2 mb-2">
+          <span className={`text-base md:text-lg mt-0.5 flex-shrink-0 ${t.muted}`}>›</span>
+          <p className={`text-base md:text-lg leading-relaxed ${t.body}`}>
+            {line.replace(/^[-•]\s/, "")}
+          </p>
+        </div>
+      );
+    }
+
+    // Numbered list
+    if (line.match(/^\d+\./)) {
+      return (
+        <div key={i} className="flex gap-2 mb-2">
+          <span className={`text-base md:text-lg flex-shrink-0 font-semibold ${t.accentNum}`}>
+            {line.match(/^\d+/)[0]}.
+          </span>
+          <p className={`text-base md:text-lg leading-relaxed ${t.body}`}>
+            {line.replace(/^\d+\.\s*/, "")}
+          </p>
+        </div>
+      );
+    }
+
+    if (line.trim() === "") return <div key={i} className="h-3" />;
+
+    return (
+      <p key={i} className={`text-base md:text-lg leading-relaxed mb-3 ${t.body}`}>
+        {line}
+      </p>
+    );
   };
 
   const renderRichContent = (section) => {
-    const text = section.content;
     const blocks = [];
-    let buffer = [];
-    let inCode = false;
-    let codeBuffer = [];
-    let insertTableAfterBlock = null;
+    let buffer = [], inCode = false, codeBuffer = [];
 
-    text.split("\n").forEach((line, i) => {
+    section.content.split("\n").forEach((line, i) => {
       if (line.startsWith("```")) {
         if (inCode) {
           blocks.push({ type: "code", content: codeBuffer.join("\n"), key: i });
-          codeBuffer = [];
-          inCode = false;
+          codeBuffer = []; inCode = false;
         } else {
-          if (buffer.length > 0) {
-            blocks.push({ type: "text", content: buffer.join("\n"), key: i });
-            buffer = [];
-          }
+          if (buffer.length) { blocks.push({ type: "text", content: buffer.join("\n"), key: i }); buffer = []; }
           inCode = true;
         }
       } else if (inCode) {
@@ -413,29 +505,26 @@ export default function TokenGuide() {
         buffer.push(line);
       }
     });
-    if (buffer.length > 0)
-      blocks.push({ type: "text", content: buffer.join("\n"), key: 9999 });
+    if (buffer.length) blocks.push({ type: "text", content: buffer.join("\n"), key: 9999 });
 
+    // Inject model table into the right-model section after block index 1
     const rendered = blocks.map((block) => {
       if (block.type === "code") {
         return (
-          <div
-            key={block.key}
-            className="bg-slate-900 border border-slate-700 rounded-lg p-4 my-4 font-mono text-sm md:text-base text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto"
-          >
+          <div key={block.key}
+            className={`rounded-lg p-4 my-4 font-mono text-sm md:text-base whitespace-pre-wrap leading-relaxed overflow-x-auto border ${t.code}`}>
             {block.content}
           </div>
         );
       }
-      return <div key={block.key}>{renderContent(block.content)}</div>;
+      return <div key={block.key}>{block.content.split("\n").map(renderLine)}</div>;
     });
 
-    if (section.table) {
-      rendered.splice(2, 0, <ModelTable key="model-table" />);
-    }
-
+    if (section.table) rendered.splice(2, 0, <ModelTable key="model-table" t={t} />);
     return rendered;
   };
+
+  // ── Nav ───────────────────────────────────────────────────────────────────
 
   const handleNavClick = (id) => {
     setActive(id);
@@ -443,39 +532,44 @@ export default function TokenGuide() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const curIdx = sections.findIndex((s) => s.id === active);
+
+  // ── Render ────────────────────────────────────────────────────────────────
+
   return (
-    <div
-      className="min-h-screen bg-slate-950 text-white flex flex-col"
-      style={{ fontFamily: "'Georgia', serif" }}
-    >
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${t.app}`}
+      style={{ fontFamily: "'Georgia', serif" }}>
+
       {/* Header */}
-      <div className="border-b border-slate-800 px-4 md:px-6 py-4 md:py-5 bg-slate-900 sticky top-0 z-10">
+      <div className={`border-b px-4 md:px-6 py-4 sticky top-0 z-10 transition-colors duration-300 ${t.header}`}>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3">
-            <button
-              className="md:hidden text-slate-400 hover:text-white mr-1"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-label="Toggle menu"
-            >
+            {/* Hamburger */}
+            <button className={`md:hidden mr-1 ${t.menuBtn}`}
+              onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Toggle menu">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {sidebarOpen
                   ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
               </svg>
             </button>
+
             <span className="text-2xl">⚙️</span>
+
             <div className="flex-1 min-w-0">
-              <h1
-                className="text-lg md:text-xl font-bold tracking-tight text-white leading-tight"
-                style={{ fontFamily: "Georgia, serif" }}
-              >
+              <h1 className={`text-lg md:text-xl font-bold tracking-tight leading-tight ${t.title}`}
+                style={{ fontFamily: "Georgia, serif" }}>
                 Token Efficiency Guide
               </h1>
-              <p className="text-slate-400 text-sm hidden md:block">
+              <p className={`text-sm hidden md:block ${t.subtitle}`}>
                 Stop hitting usage limits — practical habits for new Claude users
               </p>
             </div>
-            <span className="text-xs text-slate-500 font-mono bg-slate-800 px-2 py-1 rounded whitespace-nowrap">
+
+            {/* Theme toggle */}
+            <ThemeToggle isDark={isDark} onToggle={() => setIsDark(d => !d)} />
+
+            <span className={`hidden sm:block text-xs font-mono px-2 py-1 rounded ${t.badge}`}>
               For New Users
             </span>
           </div>
@@ -484,83 +578,79 @@ export default function TokenGuide() {
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-20 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className={`fixed inset-0 z-20 md:hidden ${t.overlay}`}
+          onClick={() => setSidebarOpen(false)} />
       )}
 
       <div className="flex flex-1 max-w-5xl mx-auto w-full relative">
+
         {/* Sidebar */}
-        <div
-          className={`
-            fixed md:static top-0 left-0 h-full md:h-auto z-30 md:z-auto
-            w-64 md:w-60 flex-shrink-0
-            bg-slate-950 md:bg-transparent
-            border-r border-slate-800
-            py-16 md:py-4 px-2
-            transition-transform duration-200 ease-in-out
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-            overflow-y-auto
-          `}
-        >
+        <div className={`
+          fixed md:static top-0 left-0 h-full md:h-auto z-30 md:z-auto
+          w-64 md:w-60 flex-shrink-0 border-r
+          py-16 md:py-4 px-2
+          transition-all duration-200 ease-in-out overflow-y-auto
+          ${t.sidebar}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}>
           {sections.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => handleNavClick(s.id)}
+            <button key={s.id} onClick={() => handleNavClick(s.id)}
               className={`w-full text-left px-3 py-2.5 rounded-lg mb-1 transition-all text-sm leading-snug ${
-                active === s.id
-                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
-              }`}
-            >
+                active === s.id ? t.navActive : t.navInactive
+              }`}>
               <span className="mr-2">{s.emoji}</span>
               {s.title}
             </button>
           ))}
         </div>
 
-        {/* Main Content */}
+        {/* Main content */}
         <div className="flex-1 p-5 md:p-8 overflow-auto min-w-0">
           {activeSection && (
             <div>
+              {/* Section heading */}
               <div className="flex items-start gap-3 mb-6">
                 <span className="text-3xl md:text-4xl mt-1">{activeSection.emoji}</span>
-                <h2
-                  className="text-2xl md:text-3xl font-bold text-white leading-tight"
-                  style={{ fontFamily: "Georgia, serif" }}
-                >
+                <h2 className={`text-2xl md:text-3xl font-bold leading-tight ${t.title}`}
+                  style={{ fontFamily: "Georgia, serif" }}>
                   {activeSection.title}
                 </h2>
               </div>
-              <div className="max-w-none">
-                {renderRichContent(activeSection)}
-              </div>
+
+              {/* Content */}
+              {activeSection.isComponent ? (
+                <>
+                  <div className={`rounded-lg border p-4 mb-6 ${t.introBg}`}>
+                    <p className={`text-base md:text-lg leading-relaxed ${t.introText}`}>
+                      {activeSection.intro}
+                    </p>
+                  </div>
+                  <HallucinationExplainer isDark={isDark} />
+                </>
+              ) : (
+                <div className="max-w-none">
+                  {renderRichContent(activeSection)}
+                </div>
+              )}
             </div>
           )}
 
           {/* Footer nav */}
-          <div className="mt-10 pt-6 border-t border-slate-800 flex justify-between items-center">
+          <div className={`mt-10 pt-6 border-t flex justify-between items-center ${t.footBorder}`}>
             <button
-              onClick={() => {
-                const idx = sections.findIndex((s) => s.id === active);
-                if (idx > 0) handleNavClick(sections[idx - 1].id);
-              }}
-              disabled={active === sections[0].id}
-              className="text-sm md:text-base text-slate-400 hover:text-white disabled:opacity-30 transition-colors px-4 py-2 rounded border border-slate-700 hover:border-slate-500 disabled:hover:border-slate-700"
+              onClick={() => curIdx > 0 && handleNavClick(sections[curIdx - 1].id)}
+              disabled={curIdx === 0}
+              className={`text-sm md:text-base transition-colors px-4 py-2 rounded border ${t.navBtn}`}
             >
               ← Previous
             </button>
-            <span className="text-sm text-slate-600 font-mono">
-              {sections.findIndex((s) => s.id === active) + 1} / {sections.length}
+            <span className={`text-sm font-mono ${t.counter}`}>
+              {curIdx + 1} / {sections.length}
             </span>
             <button
-              onClick={() => {
-                const idx = sections.findIndex((s) => s.id === active);
-                if (idx < sections.length - 1) handleNavClick(sections[idx + 1].id);
-              }}
-              disabled={active === sections[sections.length - 1].id}
-              className="text-sm md:text-base text-slate-400 hover:text-white disabled:opacity-30 transition-colors px-4 py-2 rounded border border-slate-700 hover:border-slate-500 disabled:hover:border-slate-700"
+              onClick={() => curIdx < sections.length - 1 && handleNavClick(sections[curIdx + 1].id)}
+              disabled={curIdx === sections.length - 1}
+              className={`text-sm md:text-base transition-colors px-4 py-2 rounded border ${t.navBtn}`}
             >
               Next →
             </button>
